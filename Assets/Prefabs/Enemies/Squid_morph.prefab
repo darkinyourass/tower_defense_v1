@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5212755183981547332}
   - component: {fileID: 5053142078196055866}
   - component: {fileID: 4000542704939572496}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 7944037770863808311}
   - component: {fileID: -5448951867051916821}
   - component: {fileID: 3725979599735193575}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Squid_morph
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -264,7 +264,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7692674510123989661}
   - component: {fileID: 6800983294777221858}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Health_bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}

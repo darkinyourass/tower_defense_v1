@@ -2993,7 +2993,7 @@ MonoBehaviour:
   towerCardPrefab: {fileID: 1190810898997269929, guid: e7f3020ace974bc4698c4dc6dbeb6631, type: 3}
   cardsContainer: {fileID: 227493637}
   towers:
-  - {fileID: 11400000, guid: 2e7f021fac896c846b78058b74c4850e, type: 2}
+  - {fileID: 11400000, guid: 8ba2eb24ee3928843ba98366fe9fe9fe, type: 2}
   - {fileID: 11400000, guid: 2cb362928533ae847aa29ede4cc4f66a, type: 2}
   - {fileID: 11400000, guid: 2f6622f8cdf49194fa1a6c0519155b20, type: 2}
   speed1Button: {fileID: 1947172630}
@@ -6953,6 +6953,8 @@ MonoBehaviour:
   squidBossPool: {fileID: 632621885}
   locustMorphPool: {fileID: 742845279}
   locustBossPool: {fileID: 1547941149}
+  _timeBetweenWaves: 10
+  _earlyStartBonus: 25
 --- !u!4 &2015952778
 Transform:
   m_ObjectHideFlags: 0

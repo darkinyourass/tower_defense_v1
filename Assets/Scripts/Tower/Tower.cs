@@ -72,21 +72,48 @@ public class Tower : MonoBehaviour
         }
     }
 
-    private void Shoot()
-    {
-        _enemiesInRange.RemoveAll(enemy => enemy == null || !enemy.gameObject.activeInHierarchy);
+	private void Shoot()
+	{
+		_enemiesInRange.RemoveAll(enemy => enemy == null || !enemy.gameObject.activeInHierarchy);
 
-        if (_enemiesInRange.Count > 0)
-        {
-            GameObject projectile = _projectilePool.GetPooledObject();
-            projectile.transform.position = transform.position;
-            projectile.SetActive(true);
-            Vector2 _shootDirection = (_enemiesInRange[0].transform.position - transform.position).normalized;
-            projectile.GetComponent<Projectile>().Shoot(data, _shootDirection);
-        }
-    }
+		if (_enemiesInRange.Count > 0)
+		{
+			GameObject projectile = _projectilePool.GetPooledObject();
+			projectile.transform.position = transform.position;
+			projectile.SetActive(true);
 
-    private void HandleEnemyDestroyed(Enemy enemy)
+			Vector2 _shootDirection = (_enemiesInRange[0].transform.position - transform.position).normalized;
+
+			DamageInfo damageInfo = new DamageInfo(data.damage, data.damageType);
+			damageInfo.HitPosition = transform.position;
+			damageInfo.AoeRadius = data.aoeRadius;
+			damageInfo.SlowAmount = data.slowAmount;
+			damageInfo.SlowDuration = data.debuffDuration;
+			damageInfo.DotDamagePerSecond = data.dotDamagePerSecond;
+			damageInfo.DotDuration = data.debuffDuration;
+			damageInfo.ChainBounces = data.chainBounces;
+			damageInfo.ChainDamageFalloff = data.chainDamageFalloff;
+
+			if (data.damageType.HasFlag(DamageType.Explosive))
+			{
+				ExplosiveProjectile explosive = projectile.GetComponent<ExplosiveProjectile>();
+				if (explosive != null)
+				{
+					explosive.Shoot(data, _shootDirection, _enemiesInRange[0].transform, damageInfo);
+				}
+			}
+			else
+			{
+				Projectile proj = projectile.GetComponent<Projectile>();
+				if (proj != null)
+				{
+					proj.Shoot(data, _shootDirection);
+				}
+			}
+		}
+	}
+
+	private void HandleEnemyDestroyed(Enemy enemy)
     {
         _enemiesInRange.Remove(enemy);
     }

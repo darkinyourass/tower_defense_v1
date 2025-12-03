@@ -63,24 +63,32 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
-    {
-        if (_hasBeenCounted) return;
+	public void TakeDamage(float damage)
+	{
+		DamageInfo info = new DamageInfo(damage, DamageType.Physical);
+		TakeDamage(info);
+	}
 
-        _lives -= damage;
-        _lives = Math.Max(_lives, 0);
-        UpdateHealthBar();
+	public void TakeDamage(DamageInfo damageInfo)
+	{
+		if (_hasBeenCounted) return;
 
-        if (_lives <= 0)
-        {
-            AudioManager.Instance.PlayEnemyDestroyed();
-            _hasBeenCounted = true;
-            OnEnemyDestroyed?.Invoke(this);
-            gameObject.SetActive(false);
-        }
-    }
+		_lives -= damageInfo.Amount;
+		_lives = Mathf.Max(_lives, 0);
+		UpdateHealthBar();
 
-    private void UpdateHealthBar()
+		Debug.Log($"{gameObject.name} получил {damageInfo.Amount} урона типа {damageInfo.Type}");
+
+		if (_lives <= 0)
+		{
+			AudioManager.Instance.PlayEnemyDestroyed();
+			_hasBeenCounted = true;
+			OnEnemyDestroyed?.Invoke(this);
+			gameObject.SetActive(false);
+		}
+	}
+
+	private void UpdateHealthBar()
     {
         float healthPercent = _lives / _maxLives;
         Vector3 scale = _healthBarOriginalScale;

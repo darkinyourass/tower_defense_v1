@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2761225713105826862}
   - component: {fileID: 4071543647100534208}
   - component: {fileID: 6445072800472825951}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Kaiju
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5676583058034281444}
   - component: {fileID: 6549653392936373067}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Health_bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}

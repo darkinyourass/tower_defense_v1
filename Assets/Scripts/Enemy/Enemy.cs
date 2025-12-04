@@ -17,7 +17,9 @@ public class Enemy : MonoBehaviour
     private float _lives;
     private float _maxLives;
     private float _speed;
-    public float CurrentSpeed
+	private float _slowMultiplier = 1f;
+	private float _slowEndTime = 0f;
+	public float CurrentSpeed
     {
         get => _speed;
         set => _speed = Mathf.Max(0, value);
@@ -42,11 +44,18 @@ public class Enemy : MonoBehaviour
     {
         if (_hasBeenCounted) return;
 
-        // move towards target position
-        transform.position = Vector3.MoveTowards(transform.position, _targetPosition, _speed * Time.deltaTime);
+		// move towards target position
+		if (_slowEndTime > 0 && Time.time > _slowEndTime)
+		{
+			_slowMultiplier = 1f;
+			_slowEndTime = 0f;
+		}
 
-        // when target reached, set new target position
-        float relativeDistance = (transform.position - _targetPosition).magnitude;
+		// move towards target position
+		transform.position = Vector3.MoveTowards(transform.position, _targetPosition, _speed * _slowMultiplier * Time.deltaTime);
+
+		// when target reached, set new target position
+		float relativeDistance = (transform.position - _targetPosition).magnitude;
         if (relativeDistance < 0.1f)
         {
             if (_currentWaypoint < _currentPath.Waypoints.Length - 1)
@@ -76,6 +85,10 @@ public class Enemy : MonoBehaviour
 		_lives -= damageInfo.Amount;
 		_lives = Mathf.Max(_lives, 0);
 		UpdateHealthBar();
+		if (damageInfo.Type.HasFlag(DamageType.Frost))
+		{
+			ApplySlow(damageInfo.SlowAmount, damageInfo.SlowDuration);
+		}
 
 		Debug.Log($"{gameObject.name} получил {damageInfo.Amount} урона типа {damageInfo.Type}");
 
@@ -111,4 +124,13 @@ public class Enemy : MonoBehaviour
         float offsetY = UnityEngine.Random.Range(-0.5f, 0.5f);
         _offset = new Vector2(offsetX, offsetY);
     }
+
+	public void ApplySlow(float slowAmount, float duration)
+	{
+		_slowMultiplier = 1f - slowAmount;  // 0.5 slow = 0.5 скорости
+		_slowEndTime = Time.time + duration;
+
+		Debug.Log($"{gameObject.name} замедлен на {slowAmount * 100}% на {duration} сек");
+	}
+
 }

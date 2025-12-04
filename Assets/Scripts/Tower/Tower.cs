@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Tower : MonoBehaviour
@@ -100,6 +100,14 @@ public class Tower : MonoBehaviour
 				if (explosive != null)
 				{
 					explosive.Shoot(data, _shootDirection, _enemiesInRange[0].transform, damageInfo);
+				}
+			}
+			else if (data.damageType.HasFlag(DamageType.Frost))  // ← ДОБАВЬ ЭТО
+			{
+				FreezeProjectile freeze = projectile.GetComponent<FreezeProjectile>();
+				if (freeze != null)
+				{
+					freeze.Shoot(data, _shootDirection, _enemiesInRange[0].transform, damageInfo);
 				}
 			}
 			else

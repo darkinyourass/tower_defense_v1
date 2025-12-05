@@ -29,3 +29,32 @@ MonoBehaviour:
   dotDamagePerSecond: 0
   chainBounces: 0
   chainDamageFalloff: 0
+  upgradeLevels:
+  - damageMultiplier: 1.157
+    fireRateMultiplier: 1.157
+    rangeMultiplier: 1.1
+    upgradeSprite: {fileID: -1401025463511422960, guid: 81e1e8b1252786549a7535e483849864, type: 3}
+    upgradeCost: 100
+    isUltimateUpgrade: 0
+    unlocksAOE: 0
+    unlocksChain: 0
+    unlocksDOT: 0
+  - damageMultiplier: 1.414
+    fireRateMultiplier: 1.35
+    rangeMultiplier: 1.3
+    upgradeSprite: {fileID: -6934368480270860225, guid: 81e1e8b1252786549a7535e483849864, type: 3}
+    upgradeCost: 100
+    isUltimateUpgrade: 0
+    unlocksAOE: 0
+    unlocksChain: 0
+    unlocksDOT: 0
+  - damageMultiplier: 2
+    fireRateMultiplier: 2
+    rangeMultiplier: 2
+    upgradeSprite: {fileID: 7538528287983206177, guid: 81e1e8b1252786549a7535e483849864, type: 3}
+    upgradeCost: 200
+    isUltimateUpgrade: 1
+    unlocksAOE: 1
+    unlocksChain: 0
+    unlocksDOT: 0
+  currentLevel: 1

@@ -11,7 +11,9 @@ public class UIController : MonoBehaviour
 {
     public static UIController Instance { get; private set; }
 
-    [SerializeField] private TMP_Text waveText;
+	[SerializeField] private TowerUpgradePanel towerUpgradePanel;
+
+	[SerializeField] private TMP_Text waveText;
     [SerializeField] private TMP_Text livesText;
     [SerializeField] private TMP_Text resourcesText;
     [SerializeField] private TMP_Text warningText;
@@ -67,7 +69,8 @@ public class UIController : MonoBehaviour
         TowerCard.OnTowerSelected += HandleTowerSelected;
         SceneManager.sceneLoaded += OnSceneLoaded;
         Spawner.OnMissionComplete += ShowMissionComplete;
-    }
+		Tower.OnTowerClicked += HandleTowerClicked;
+	}
 
     private void OnDisable()
     {
@@ -78,7 +81,8 @@ public class UIController : MonoBehaviour
         TowerCard.OnTowerSelected -= HandleTowerSelected;
         SceneManager.sceneLoaded -= OnSceneLoaded;
         Spawner.OnMissionComplete -= ShowMissionComplete;
-    }
+		Tower.OnTowerClicked -= HandleTowerClicked;
+	}
 
     private void Start()
     {
@@ -369,4 +373,11 @@ public class UIController : MonoBehaviour
         int currentIndex = Array.IndexOf(levelManager.allLevels, levelManager.CurrentLevel);
         nextLevelButton.interactable = currentIndex + 1 < levelManager.allLevels.Length;
     }
+
+	private void HandleTowerClicked(Tower tower)
+	{
+		HideTowerPanel();        // Закрити панель вибору башни
+		towerUpgradePanel.Open(tower);  // Відкрити панель апгрейду
+	}
+
 }

@@ -8771,6 +8771,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1cd50bf46cbc0147ab70c6d15cd70a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heroPrefab: {fileID: 3085877535645598458, guid: e92cd9c84cd52094eb2442f9d52f69c5, type: 3}
+  heroSpawnPos: {x: 0, y: 0, z: 0}
   orcPool: {fileID: 1985934181}
   dragonPool: {fileID: 462741117}
   kaijuPool: {fileID: 1052898404}

@@ -7,6 +7,9 @@ public class Spawner : MonoBehaviour
 {
 	public static Spawner Instance { get; private set; }
 
+	[SerializeField] private GameObject heroPrefab;  // ← ДОБАВИТЬ
+	[SerializeField] private Vector3 heroSpawnPos = Vector3.zero;
+
 	public static event Action<int> OnWaveChanged;
 	public static event Action OnMissionComplete;
 	public static event Action<bool> OnWaveCooldownChanged;
@@ -163,6 +166,13 @@ public class Spawner : MonoBehaviour
 	/// </summary>
 	private void StartNextWave()
 	{
+
+		if (FindObjectOfType<Hero>() == null)  // Проверка что героя ещё нет
+		{
+			Instantiate(heroPrefab, heroSpawnPos, Quaternion.identity);
+			Debug.Log("🦸 Hero spawned!");
+		}
+
 		_currentWaveIndex = (_currentWaveIndex + 1) % _waves.Length;
 		_waveCounter++;
 		OnWaveChanged?.Invoke(_waveCounter);

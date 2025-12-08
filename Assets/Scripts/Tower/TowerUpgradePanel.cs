@@ -53,10 +53,10 @@ public class TowerUpgradePanel : MonoBehaviour
 			towerIcon.sprite = _towerData.sprite;
 
 		// Заповнити рівень і статистику
-		levelText.text = $"Рівень: {_towerData.currentLevel}/5";
-		damageText.text = $"Урон: {_towerData.damage:F1}";
-		rangeText.text = $"Радіус: {_towerData.range:F1}";
-		fireRateText.text = $"Швидкість атаки: {(1f / _towerData.shootInterval):F2}";
+		levelText.text = $"Level: {_towerData.currentLevel}/5";
+		damageText.text = $"DMG: {_towerData.damage:F1}";
+		rangeText.text = $"Range: {_towerData.range:F1}";
+		fireRateText.text = $"Attack Speed: {(1f / _towerData.shootInterval):F2}";
 
 		// Скасувати бонус текст спочатку
 		upgradeBonusText.text = "";
@@ -65,14 +65,14 @@ public class TowerUpgradePanel : MonoBehaviour
 		if (_towerData.CanUpgrade())
 		{
 			int cost = _towerData.GetUpgradeCost();
-			upgradeCostText.text = $"Апгрейд: {cost} 💰";
+			upgradeCostText.text = $"Upgrade: {cost} 💰";
 			upgradeButton.interactable = true;
 
 			// Показати спеціальний бонус якщо це буде 5 рівень
 			TowerUpgradeLevel nextLevel = _towerData.GetNextUpgradeLevel();
 			if (nextLevel != null && nextLevel.isUltimateUpgrade)
 			{
-				string bonus = "🌟 СПЕЦІАЛЬНИЙ АПГРЕЙД!\n";
+				string bonus = "🌟 SPECIEL UPGRADE!\n";
 
 				if (nextLevel.unlocksAOE)
 					bonus += "✨ Розблокована атака по площі (AOE)\n";
@@ -89,7 +89,7 @@ public class TowerUpgradePanel : MonoBehaviour
 		}
 		else
 		{
-			upgradeCostText.text = "⭐ МАКСИМАЛЬНИЙ РІВЕНЬ";
+			upgradeCostText.text = "⭐ MAX LEVEL";
 			upgradeButton.interactable = false;
 			upgradeBonusText.text = "";
 		}

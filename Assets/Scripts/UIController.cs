@@ -1,4 +1,4 @@
-using TMPro;
+п»їusing TMPro;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
@@ -376,8 +376,17 @@ public class UIController : MonoBehaviour
 
 	private void HandleTowerClicked(Tower tower)
 	{
-		HideTowerPanel();        // Закрити панель вибору башни
-		towerUpgradePanel.Open(tower);  // Відкрити панель апгрейду
+		Debug.Log("рџ”µ TOWER CLICKED EVENT TRIGGERED!");
+
+		if (towerUpgradePanel == null)
+		{
+			Debug.LogError("вќЊ towerUpgradePanel is NULL!");
+			return;
+		}
+
+		HideTowerPanel();
+		Debug.Log("рџџў Opening upgrade panel...");
+		towerUpgradePanel.Open(tower);
 	}
 
 }

@@ -154,9 +154,13 @@ public class Tower : MonoBehaviour
 		_enemiesInRange.Remove(enemy);
 	}
 
-	// Клік на башню
 	private void OnMouseDown()
 	{
 		OnTowerClicked?.Invoke(this);
 	}
+	public void Click()
+	{
+		OnTowerClicked?.Invoke(this);
+	}
+
 }

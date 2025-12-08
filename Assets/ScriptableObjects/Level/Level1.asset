@@ -14,12 +14,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelName: Level1
   wavesToWin: 2
-  startingResources: 500
+  startingResources: 1500
   startingLives: 20
   initialSpawnPosition: {x: -10, y: 10}
   waves:
   - enemies:
     - enemyType: 0
+      count: 5
+      spawnDelay: 0
+    - enemyType: 1
+      count: 10
+      spawnDelay: 0
+    - enemyType: 2
+      count: 3
+      spawnDelay: 0
+    - enemyType: 3
+      count: 10
+      spawnDelay: 5
+    - enemyType: 4
+      count: 7
+      spawnDelay: 0
+    - enemyType: 6
+      count: 5
+      spawnDelay: 0
+    - enemyType: 5
+      count: 1
+      spawnDelay: 20
+    - enemyType: 7
+      count: 1
+      spawnDelay: 20
+    spawnInterval: 10
+    waveSpawnClip: {fileID: 8300000, guid: 909ff29ac5b39c54996669150c8457b1, type: 3}
+    enemyType: 0
+    enemiesPerWave: 0
+  - enemies:
+    - enemyType: 1
       count: 5
       spawnDelay: 0
     - enemyType: 1

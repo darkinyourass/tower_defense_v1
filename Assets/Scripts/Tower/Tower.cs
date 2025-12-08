@@ -25,6 +25,7 @@ public class Tower : MonoBehaviour
 
 	private void Start()
 	{
+		data = ScriptableObject.Instantiate(data);
 		_circleCollider = GetComponent<CircleCollider2D>();
 		_spriteRenderer = GetComponent<SpriteRenderer>();
 

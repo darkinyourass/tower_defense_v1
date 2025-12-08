@@ -12,7 +12,7 @@ public class Spawner : MonoBehaviour
 	public static event Action<bool> OnWaveCooldownChanged;
 
 	private WaveData[] _waves => LevelManager.Instance.CurrentLevel.waves;
-	private int _currentWaveIndex = 0;
+	private int _currentWaveIndex = -1;
 	private int _waveCounter = 0;
 	private WaveData CurrentWave => _waves[_currentWaveIndex];
 
@@ -92,7 +92,7 @@ public class Spawner : MonoBehaviour
 
 	private void Start()
 	{
-		OnWaveChanged?.Invoke(_waveCounter);
+		
 	}
 
 	void Update()
@@ -242,6 +242,8 @@ public class Spawner : MonoBehaviour
 		{
 			transform.position = LevelManager.Instance.CurrentLevel.initialSpawnPosition;
 		}
+
+		StartNextWave();
 	}
 
 	private void ResetWaveState()

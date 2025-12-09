@@ -173,6 +173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: bb77a13bb02a1694591809a7aaf0ac5a, type: 2}
+  xpOrbPrefab: {fileID: 290602431830242056, guid: 6ae3fad25c1fdab429442a4f97067120, type: 3}
   healthBar: {fileID: 7692674510123989661}
 --- !u!50 &-5448951867051916821
 Rigidbody2D:

@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 0109133224c184545913e05476c34c05, type: 2}
+  xpOrbPrefab: {fileID: 290602431830242056, guid: 6ae3fad25c1fdab429442a4f97067120, type: 3}
   healthBar: {fileID: 5676583058034281444}
 --- !u!212 &2761225713105826862
 SpriteRenderer:

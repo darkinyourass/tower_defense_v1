@@ -25,7 +25,12 @@ public class UIController : MonoBehaviour
     [SerializeField] private TowerData[] towers;
     private List<GameObject> activeCards = new List<GameObject>();
 
-    private Platform _currentPlatform;
+	[Header("=== XP SYSTEM ===")]
+	[SerializeField] private GameObject xpBarContainer;  // Контейнер для XP bar
+	[SerializeField] private UnityEngine.UI.Image xpBarFill;  // Fill bar
+	[SerializeField] private TMP_Text xpLevelText;  // "Level: 5"
+
+	private Platform _currentPlatform;
 
     [SerializeField] private Button speed1Button;
     [SerializeField] private Button speed2Button;
@@ -70,6 +75,8 @@ public class UIController : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
         Spawner.OnMissionComplete += ShowMissionComplete;
 		Tower.OnTowerClicked += HandleTowerClicked;
+		XPManager.OnXPChanged += UpdateXPBar;
+		XPManager.OnLevelUp += ShowLevelUpNotification;
 	}
 
     private void OnDisable()
@@ -82,9 +89,12 @@ public class UIController : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
         Spawner.OnMissionComplete -= ShowMissionComplete;
 		Tower.OnTowerClicked -= HandleTowerClicked;
+		XPManager.OnXPChanged -= UpdateXPBar;
+		XPManager.OnLevelUp -= ShowLevelUpNotification;
+
 	}
 
-    private void Start()
+	private void Start()
     {
         speed1Button.onClick.AddListener(() => {
             SetGameSpeed(0.2f);
@@ -110,7 +120,32 @@ public class UIController : MonoBehaviour
         }
     }
 
-    private void UpdateWaveText(int currentWave)
+	/// <summary>
+	/// Обновить XP bar (вызывается из XPManager)
+	/// </summary>
+	private void UpdateXPBar(int currentXP, int requiredXP)
+	{
+		if (xpBarFill != null)
+		{
+			float progress = (float)currentXP / requiredXP;
+			xpBarFill.fillAmount = progress;
+		}
+	}
+
+	/// <summary>
+	/// Показать уведомление о level up
+	/// </summary>
+	private void ShowLevelUpNotification(int newLevel)
+	{
+		if (xpLevelText != null)
+		{
+			xpLevelText.text = $"Level: {newLevel}";
+		}
+
+		Debug.Log($"🎉 LEVEL UP! Теперь {newLevel} уровень");
+	}
+
+	private void UpdateWaveText(int currentWave)
     {
 		waveText.text = $"Wave: {currentWave}";
     }
@@ -334,7 +369,11 @@ public class UIController : MonoBehaviour
         speed2Button.gameObject.SetActive(false);
         speed3Button.gameObject.SetActive(false);
         pauseButton.gameObject.SetActive(false);
-    }
+
+		if (xpBarContainer != null)
+			xpBarContainer.SetActive(false);
+
+	}
 
     private void ShowUI()
     {
@@ -347,7 +386,11 @@ public class UIController : MonoBehaviour
         speed3Button.gameObject.SetActive(true);
         HighlightSelectedSpeedButton(GameManager.Instance.GameSpeed);
         pauseButton.gameObject.SetActive(true);
-    }
+
+		if (xpBarContainer != null)
+			xpBarContainer.SetActive(true);
+
+	}
 
     private void HidePanels()
     {

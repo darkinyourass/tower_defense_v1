@@ -17,3 +17,4 @@ MonoBehaviour:
   minSpeed: 0.8
   maxSpeed: 1.5
   resourceReward: 3
+  xpReward: 30

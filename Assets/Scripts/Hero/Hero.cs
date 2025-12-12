@@ -4,13 +4,11 @@ using UnityEngine.InputSystem;
 public class Hero : MonoBehaviour
 {
 	[Header("=== MOVEMENT ===")]
-	[SerializeField] private float moveSpeed = 5f;
+	// Скорость берётся из HeroStats!
 	private Vector2 _moveDirection;
 
 	[Header("=== COMBAT ===")]
-	[SerializeField] private float shootCooldown = 0.8f;
 	[SerializeField] private float attackRange = 3f;
-	[SerializeField] private float baseDamage = 10f;
 	[SerializeField] private DamageType damageType = DamageType.Physical;
 
 	private float _shootTimer;
@@ -20,7 +18,6 @@ public class Hero : MonoBehaviour
 	private void Start()
 	{
 		_projectilePool = GetComponent<ObjectPooler>();
-
 		if (_projectilePool == null)
 		{
 			Debug.LogError("❌ ObjectPooler не найден на Hero!");
@@ -28,7 +25,7 @@ public class Hero : MonoBehaviour
 		}
 
 		Debug.Log("🦸 Hero инициализирован!");
-		_shootTimer = shootCooldown;
+		_shootTimer = 0f;
 	}
 
 	private void Update()
@@ -50,7 +47,10 @@ public class Hero : MonoBehaviour
 		if (Keyboard.current.dKey.isPressed) _moveDirection.x += 1;
 
 		_moveDirection = _moveDirection.normalized;
-		transform.position += (Vector3)_moveDirection * moveSpeed * Time.deltaTime;
+
+		// ✅ ИСПОЛЬЗУЕМ СКОРОСТЬ ИЗ СТАТОВ!
+		float currentSpeed = HeroStats.Instance.GetMoveSpeed();
+		transform.position += (Vector3)_moveDirection * currentSpeed * Time.deltaTime;
 	}
 
 	private void HandleShooting()
@@ -61,14 +61,16 @@ public class Hero : MonoBehaviour
 		if (_targetEnemy != null && _shootTimer <= 0)
 		{
 			ShootAt(_targetEnemy);
-			_shootTimer = shootCooldown;
+
+			// ✅ ИСПОЛЬЗУЕМ ATTACK SPEED ИЗ СТАТОВ!
+			float attackSpeed = HeroStats.Instance.GetAttackSpeed();
+			_shootTimer = 1f / attackSpeed;
 		}
 	}
 
 	private Enemy FindNearestEnemy()
 	{
 		Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, attackRange);
-
 		Enemy nearest = null;
 		float nearestDistance = float.MaxValue;
 
@@ -77,11 +79,9 @@ public class Hero : MonoBehaviour
 			if (hit.CompareTag("Enemy"))
 			{
 				Enemy enemy = hit.GetComponent<Enemy>();
-
 				if (enemy != null && enemy.isActiveAndEnabled)
 				{
 					float distance = Vector2.Distance(transform.position, enemy.transform.position);
-
 					if (distance < nearestDistance)
 					{
 						nearestDistance = distance;
@@ -99,7 +99,6 @@ public class Hero : MonoBehaviour
 		if (_projectilePool == null) return;
 
 		GameObject projectileObj = _projectilePool.GetPooledObject();
-
 		if (projectileObj == null)
 		{
 			Debug.LogWarning("⚠️ Нет снарядов в пуле!");
@@ -110,19 +109,20 @@ public class Hero : MonoBehaviour
 		projectileObj.SetActive(true);
 
 		Vector2 direction = (target.transform.position - transform.position).normalized;
-
 		Projectile projectile = projectileObj.GetComponent<Projectile>();
+
 		if (projectile != null)
 		{
-			// Создать TowerData для героя
+			// ✅ ИСПОЛЬЗУЕМ DAMAGE ИЗ СТАТОВ!
 			TowerData heroData = new TowerData();
-			heroData.damage = baseDamage;
+			heroData.damage = HeroStats.Instance.GetDamage();
 			heroData.projectileSize = 0.5f;
 			heroData.projectileSpeed = 8f;
 			heroData.projectileDuration = 5f;
 
-			// Запустить снаряд
 			projectile.Shoot(heroData, (Vector3)direction);
+
+			Debug.Log($"💥 Выстрел! Урон: {heroData.damage}");
 		}
 	}
 

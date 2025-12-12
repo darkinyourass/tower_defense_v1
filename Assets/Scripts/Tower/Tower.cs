@@ -115,7 +115,17 @@ public class Tower : MonoBehaviour
 			{
 				Projectile proj = projectile.GetComponent<Projectile>();
 				if (proj != null)
-					proj.Shoot(data, _shootDirection);
+				{
+					// ✅ НОВАЯ СИГНАТУРА: (damage, pierce, speed, size, duration, direction)
+					proj.Shoot(
+						data.damage,                    // damage
+						0,                              // pierce (у башен пока нет)
+						data.projectileSpeed,           // speed
+						data.projectileSize,            // size
+						data.projectileDuration,        // duration
+						_shootDirection                 // direction
+					);
+				}
 			}
 		}
 	}

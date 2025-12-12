@@ -4708,9 +4708,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ebdd966547b6ea540b6c9ded74393947, type: 2}
   - {fileID: 11400000, guid: 3d4f77fba2fcf2849981b25f4e60236b, type: 2}
   - {fileID: 11400000, guid: 6582596d044812243b7986a8f6c73a0f, type: 2}
-  commonWeight: 70
-  rareWeight: 25
-  epicWeight: 5
+  commonWeight: 5
+  rareWeight: 5
+  epicWeight: 90
 --- !u!4 &777114318
 Transform:
   m_ObjectHideFlags: 0

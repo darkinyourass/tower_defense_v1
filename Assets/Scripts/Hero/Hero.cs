@@ -98,32 +98,51 @@ public class Hero : MonoBehaviour
 	{
 		if (_projectilePool == null) return;
 
-		GameObject projectileObj = _projectilePool.GetPooledObject();
-		if (projectileObj == null)
+		// ✅ ПОЛУЧИТЬ КОЛИЧЕСТВО СНАРЯДОВ
+		int projectileCount = HeroStats.Instance.GetProjectileCount();
+
+		for (int i = 0; i < projectileCount; i++)
 		{
-			Debug.LogWarning("⚠️ Нет снарядов в пуле!");
-			return;
+			GameObject projectileObj = _projectilePool.GetPooledObject();
+			if (projectileObj == null)
+			{
+				Debug.LogWarning("⚠️ Нет снарядов в пуле!");
+				return;
+			}
+
+			projectileObj.transform.position = transform.position;
+			projectileObj.SetActive(true);
+
+			// ✅ ВЕЕР ДЛЯ НЕСКОЛЬКИХ СНАРЯДОВ
+			Vector2 baseDirection = (target.transform.position - transform.position).normalized;
+			float spreadAngle = 15f; // Угол между снарядами
+			float angleOffset = 0f;
+
+			if (projectileCount > 1)
+			{
+				// Рассчитать смещение для веера
+				float totalSpread = spreadAngle * (projectileCount - 1);
+				angleOffset = -totalSpread / 2 + (spreadAngle * i);
+			}
+
+			// Повернуть направление
+			Vector2 direction = Quaternion.Euler(0, 0, angleOffset) * baseDirection;
+
+			Projectile projectile = projectileObj.GetComponent<Projectile>();
+			if (projectile != null)
+			{
+				// ✅ ПЕРЕДАТЬ ВСЕ СТАТЫ
+				float damage = HeroStats.Instance.GetDamage();
+				int pierce = HeroStats.Instance.GetPierceCount();
+				float speed = 8f;
+				float size = 0.5f;
+				float duration = 5f;
+
+				projectile.Shoot(damage, pierce, speed, size, duration, (Vector3)direction);
+			}
 		}
 
-		projectileObj.transform.position = transform.position;
-		projectileObj.SetActive(true);
-
-		Vector2 direction = (target.transform.position - transform.position).normalized;
-		Projectile projectile = projectileObj.GetComponent<Projectile>();
-
-		if (projectile != null)
-		{
-			// ✅ ИСПОЛЬЗУЕМ DAMAGE ИЗ СТАТОВ!
-			TowerData heroData = new TowerData();
-			heroData.damage = HeroStats.Instance.GetDamage();
-			heroData.projectileSize = 0.5f;
-			heroData.projectileSpeed = 8f;
-			heroData.projectileDuration = 5f;
-
-			projectile.Shoot(heroData, (Vector3)direction);
-
-			Debug.Log($"💥 Выстрел! Урон: {heroData.damage}");
-		}
+		Debug.Log($"💥 Выстрел x{projectileCount}! Урон: {HeroStats.Instance.GetDamage()}, Pierce: {HeroStats.Instance.GetPierceCount()}");
 	}
 
 	private void OnDrawGizmos()

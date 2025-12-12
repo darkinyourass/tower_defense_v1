@@ -71,21 +71,28 @@ public class XPManager : MonoBehaviour
 	private void LevelUp()
 	{
 		currentLevel++;
-		currentXP -= xpRequiredForNextLevel;
-		xpRequiredForNextLevel = Mathf.RoundToInt(xpRequiredForNextLevel * xpScaling);
+		currentXP -= xpRequiredForNextLevel;  // Вычесть использованный XP
+		xpRequiredForNextLevel = CalculateNextLevelXP();
 
 		Debug.Log($"⬆️ LEVEL UP! Теперь уровень {currentLevel}");
+
+		// Вызвать событие
 		OnLevelUp?.Invoke(currentLevel);
 
-		// ВРЕМЕННЫЙ ТЕСТ
-		if (UpgradePoolManager.Instance != null)
+		// Получить 3 случайных апгрейда
+		UpgradeSO[] upgrades = UpgradePoolManager.Instance.GetRandomUpgrades(3);
+
+		// Логировать в консоль (временно)
+		Debug.Log($"🎁 Доступные апгрейды:");
+		foreach (UpgradeSO upgrade in upgrades)
 		{
-			UpgradeSO[] upgrades = UpgradePoolManager.Instance.GetRandomUpgrades(3);
-			Debug.Log($"🎁 Доступные апгрейды:");
-			foreach (var upgrade in upgrades)
-			{
-				Debug.Log($"  - {upgrade.upgradeName} ({upgrade.rarity})");
-			}
+			Debug.Log($"  - {upgrade.upgradeName} ({upgrade.rarity})");
+		}
+
+		// Показать UI выбора (если создан)
+		if (UpgradeUIManager.Instance != null)
+		{
+			UpgradeUIManager.Instance.ShowUpgradePanel(upgrades);
 		}
 	}
 
@@ -113,4 +120,15 @@ public class XPManager : MonoBehaviour
 
 		OnXPChanged?.Invoke(currentXP, xpRequiredForNextLevel);
 	}
+
+	/// <summary>
+	/// Рассчитать XP для следующего уровня
+	/// </summary>
+	private int CalculateNextLevelXP()
+	{
+		// Формула: baseXP * (scaling ^ (level - 1))
+		// Пример: 100 * (1.15 ^ 1) = 115 для level 3
+		return Mathf.RoundToInt(baseXPRequired * Mathf.Pow(xpScaling, currentLevel - 1));
+	}
+
 }

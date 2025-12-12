@@ -15,11 +15,12 @@ public class TowerUpgradePanel : MonoBehaviour
 
 	[SerializeField] private Button upgradeButton;
 	[SerializeField] private TextMeshProUGUI upgradeCostText;
-	[SerializeField] private TextMeshProUGUI upgradeBonusText;  // Спеціальний ефект на 5 рівні
+	[SerializeField] private TextMeshProUGUI upgradeBonusText;
 	[SerializeField] private Button closeButton;
 
 	private Tower _selectedTower;
 	private TowerData _towerData;
+	private bool _isProcessingUpgrade = false;  // ⭐ ДОБАВИТЬ ЭТОТ ФЛАГ
 
 	private void OnEnable()
 	{
@@ -33,13 +34,11 @@ public class TowerUpgradePanel : MonoBehaviour
 		closeButton.onClick.RemoveListener(Close);
 	}
 
-	/// <summary>
-	/// Відкрити панель апгрейду для обраної башни
-	/// </summary>
 	public void Open(Tower tower)
 	{
 		_selectedTower = tower;
 		_towerData = tower.GetTowerData();
+		_isProcessingUpgrade = false;  // ⭐ СБРОСИТЬ ФЛАГ
 
 		if (_towerData == null)
 		{
@@ -47,28 +46,23 @@ public class TowerUpgradePanel : MonoBehaviour
 			return;
 		}
 
-		// Заповнити інформацію башни
 		towerNameText.text = _towerData.name;
 		if (_towerData.sprite != null)
 			towerIcon.sprite = _towerData.sprite;
 
-		// Заповнити рівень і статистику
 		levelText.text = $"Level: {_towerData.currentLevel}/5";
 		damageText.text = $"DMG: {_towerData.damage:F1}";
 		rangeText.text = $"Range: {_towerData.range:F1}";
 		fireRateText.text = $"Attack Speed: {(1f / _towerData.shootInterval):F2}";
 
-		// Скасувати бонус текст спочатку
 		upgradeBonusText.text = "";
 
-		// Заповнити кнопку апгрейду
 		if (_towerData.CanUpgrade())
 		{
 			int cost = _towerData.GetUpgradeCost();
 			upgradeCostText.text = $"Upgrade: {cost} 💰";
 			upgradeButton.interactable = true;
 
-			// Показати спеціальний бонус якщо це буде 5 рівень
 			TowerUpgradeLevel nextLevel = _towerData.GetNextUpgradeLevel();
 			if (nextLevel != null && nextLevel.isUltimateUpgrade)
 			{
@@ -84,7 +78,7 @@ public class TowerUpgradePanel : MonoBehaviour
 					bonus += "🔥 Розблокований вогневий урон\n";
 
 				upgradeBonusText.text = bonus;
-				upgradeBonusText.color = new Color(1f, 0.84f, 0f); // Золотий колір
+				upgradeBonusText.color = new Color(1f, 0.84f, 0f);
 			}
 		}
 		else
@@ -95,43 +89,45 @@ public class TowerUpgradePanel : MonoBehaviour
 		}
 
 		panel.SetActive(true);
-		Time.timeScale = 0f; // Пауза
+		Time.timeScale = 0f;
 	}
 
 	public void OnUpgradeClicked()
 	{
+		// ⭐ ЗАЩИТА: Если уже обрабатываем апгрейд, выходим
+		if (_isProcessingUpgrade)
+		{
+			Debug.LogWarning("Апгрейд уже обрабатывается!");
+			return;
+		}
+
 		if (_selectedTower == null || _towerData == null)
 			return;
 
 		int cost = _towerData.GetUpgradeCost();
 
-		// Перевірити ресурси
 		if (GameManager.Instance.Resources >= cost)
 		{
+			_isProcessingUpgrade = true;  // ⭐ УСТАНОВИТЬ ФЛАГ
+
 			GameManager.Instance.SpendResources(cost);
 			_selectedTower.UpgradeTower();
 
-			// Грати звук апгрейду
 			AudioManager.Instance.PlayTowerPlaced();
 
-			// ⭐ ЗАКРЫТЬ ПАНЕЛЬ СРАЗУ - это предотвратит двойной клик
 			Close();
 		}
 		else
 		{
-			// Показати попередження
 			Debug.LogWarning("Недостатньо ресурсів для апгрейду!");
 			StartCoroutine(ShowInsufficientResourcesWarning());
 		}
 	}
 
-	/// <summary>
-	/// Закрити панель апгрейду
-	/// </summary>
 	public void Close()
 	{
 		panel.SetActive(false);
-		Time.timeScale = 1f; // Знести паузу
+		Time.timeScale = 1f;
 	}
 
 	private System.Collections.IEnumerator ShowInsufficientResourcesWarning()

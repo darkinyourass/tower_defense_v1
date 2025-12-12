@@ -53,6 +53,24 @@ MonoBehaviour:
     rangeMultiplier: 2
     upgradeSprite: {fileID: 7538528287983206177, guid: 81e1e8b1252786549a7535e483849864, type: 3}
     upgradeCost: 200
+    isUltimateUpgrade: 0
+    unlocksAOE: 0
+    unlocksChain: 0
+    unlocksDOT: 0
+  - damageMultiplier: 2
+    fireRateMultiplier: 2
+    rangeMultiplier: 2
+    upgradeSprite: {fileID: 7538528287983206177, guid: 81e1e8b1252786549a7535e483849864, type: 3}
+    upgradeCost: 200
+    isUltimateUpgrade: 0
+    unlocksAOE: 0
+    unlocksChain: 0
+    unlocksDOT: 0
+  - damageMultiplier: 2
+    fireRateMultiplier: 2
+    rangeMultiplier: 2
+    upgradeSprite: {fileID: 7538528287983206177, guid: 81e1e8b1252786549a7535e483849864, type: 3}
+    upgradeCost: 200
     isUltimateUpgrade: 1
     unlocksAOE: 1
     unlocksChain: 0

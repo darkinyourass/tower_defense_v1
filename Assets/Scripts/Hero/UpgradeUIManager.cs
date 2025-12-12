@@ -86,8 +86,16 @@ public class UpgradeUIManager : MonoBehaviour
 	/// </summary>
 	private void ApplyUpgradeToHero(UpgradeSO upgrade)
 	{
-		// TODO: Будет в следующем шаге
-		Debug.Log($"✅ Применён апгрейд: {upgrade.upgradeName}");
+		Debug.Log($"✅ Применяю апгрейд: {upgrade.upgradeName}");
+
+		// Применить все модификации стата
+		foreach (StatModification mod in upgrade.statModifications)
+		{
+			HeroStats.Instance.ApplyStatModification(mod);
+		}
+
+		// Вывести итоговые статы
+		HeroStats.Instance.LogStats();
 	}
 
 	/// <summary>

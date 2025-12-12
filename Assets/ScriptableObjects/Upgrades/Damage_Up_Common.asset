@@ -21,7 +21,7 @@ MonoBehaviour:
   statModifications:
   - statType: 0
     modificationType: 1
-    value: 0.1
+    value: 1
   canStack: 1
   maxStacks: 5
   minLevel: 1

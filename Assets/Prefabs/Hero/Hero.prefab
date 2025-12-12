@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4249213757499649611}
   - component: {fileID: 1772217262001497073}
   - component: {fileID: 3855684190727528154}
+  - component: {fileID: 6279700366007744548}
   m_Layer: 0
   m_Name: Hero
   m_TagString: Untagged
@@ -185,3 +186,21 @@ MonoBehaviour:
   attackRange: 3
   baseDamage: 10
   damageType: 32
+--- !u!114 &6279700366007744548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3085877535645598458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d416610079ecb84db9b51ce280e58ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseDamage: 10
+  baseAttackSpeed: 1
+  baseMoveSpeed: 5
+  baseRange: 10
+  baseProjectileCount: 1
+  basePierceCount: 0

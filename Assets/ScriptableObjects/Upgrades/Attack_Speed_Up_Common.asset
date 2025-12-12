@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae159c483947c084baa635996ec0fc90, type: 3}
+  m_Name: Attack_Speed_Up_Common
+  m_EditorClassIdentifier: 
+  upgradeName: +15% Attack Speed
+  description: Hero attacks 15% faster
+  icon: {fileID: 0}
+  rarity: 0
+  upgradeType: 0
+  target: 0
+  statModifications:
+  - statType: 1
+    modificationType: 1
+    value: 0.15
+  canStack: 1
+  maxStacks: 5
+  minLevel: 1

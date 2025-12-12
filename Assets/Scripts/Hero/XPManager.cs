@@ -75,12 +75,18 @@ public class XPManager : MonoBehaviour
 		xpRequiredForNextLevel = Mathf.RoundToInt(xpRequiredForNextLevel * xpScaling);
 
 		Debug.Log($"⬆️ LEVEL UP! Теперь уровень {currentLevel}");
-
 		OnLevelUp?.Invoke(currentLevel);
 
-		// TODO Day 3: Показать UI выбора апгрейдов
-		// Time.timeScale = 0f;
-		// UpgradeSelectionUI.Instance?.ShowUpgradeChoices();
+		// ВРЕМЕННЫЙ ТЕСТ
+		if (UpgradePoolManager.Instance != null)
+		{
+			UpgradeSO[] upgrades = UpgradePoolManager.Instance.GetRandomUpgrades(3);
+			Debug.Log($"🎁 Доступные апгрейды:");
+			foreach (var upgrade in upgrades)
+			{
+				Debug.Log($"  - {upgrade.upgradeName} ({upgrade.rarity})");
+			}
+		}
 	}
 
 	/// <summary>

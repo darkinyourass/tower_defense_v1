@@ -1,33 +1,33 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 [System.Serializable]
 public class TowerUpgradeLevel
 {
 	[Header("Stats Multipliers")]
 	[Range(0.8f, 2f)]
-	public float damageMultiplier = 1.1f;           // На 10% більше урону за рівень
+	public float damageMultiplier = 1.1f;           // РќР° 10% Р±С–Р»СЊС€Рµ СѓСЂРѕРЅСѓ Р·Р° СЂС–РІРµРЅСЊ
 
 	[Range(0.8f, 2f)]
-	public float fireRateMultiplier = 1.05f;        // На 5% швидше
+	public float fireRateMultiplier = 1.05f;        // РќР° 5% С€РІРёРґС€Рµ
 
 	[Range(0.8f, 2f)]
-	public float rangeMultiplier = 1.05f;           // На 5% більший радіус
+	public float rangeMultiplier = 1.05f;           // РќР° 5% Р±С–Р»СЊС€РёР№ СЂР°РґС–СѓСЃ
 
 	[Header("Visual")]
-	public Sprite upgradeSprite;                    // Спрайт башни на цьому рівні
+	public Sprite upgradeSprite;                    // РЎРїСЂР°Р№С‚ Р±Р°С€РЅРё РЅР° С†СЊРѕРјСѓ СЂС–РІРЅС–
 
 	[Header("Cost")]
-	public int upgradeCost = 100;                   // Вартість апгрейду ТА цього рівня
+	public int upgradeCost = 100;                   // Р’Р°СЂС‚С–СЃС‚СЊ Р°РїРіСЂРµР№РґСѓ РўРђ С†СЊРѕРіРѕ СЂС–РІРЅСЏ
 
 	[Header("Special Effect (Tier 5)")]
-	public bool isUltimateUpgrade = false;          // Чи це спеціальний апгрейд на 5 рівні
+	public bool isUltimateUpgrade = false;          // Р§Рё С†Рµ СЃРїРµС†С–Р°Р»СЊРЅРёР№ Р°РїРіСЂРµР№Рґ РЅР° 5 СЂС–РІРЅС–
 
-	[Tooltip("На рівні 5 ледяна башня отримує AOE")]
-	public bool unlocksAOE = false;                 // Розблокувати AOE
+	[Tooltip("РќР° СЂС–РІРЅС– 5 Р»РµРґСЏРЅР° Р±Р°С€РЅСЏ РѕС‚СЂРёРјСѓС” AOE")]
+	public bool unlocksAOE = false;                 // Р РѕР·Р±Р»РѕРєСѓРІР°С‚Рё AOE
 
-	public bool unlocksChain = false;               // Розблокувати Chain Lightning
+	public bool unlocksChain = false;               // Р РѕР·Р±Р»РѕРєСѓРІР°С‚Рё Chain Lightning
 
-	public bool unlocksDOT = false;                 // Розблокувати DoT
+	public bool unlocksDOT = false;                 // Р РѕР·Р±Р»РѕРєСѓРІР°С‚Рё DoT
 }
 
 [CreateAssetMenu(fileName = "TowerData", menuName = "Scriptable Objects/TowerData")]
@@ -50,45 +50,45 @@ public class TowerData : ScriptableObject
 	public DamageType damageType = DamageType.Physical;
 
 	[Header("Special Effects")]
-	[Tooltip("AOE радіус для Explosive")]
+	[Tooltip("AOE СЂР°РґС–СѓСЃ РґР»СЏ Explosive")]
 	public float aoeRadius = 2f;
 
-	[Tooltip("% замедления для Frost (0.5 = 50%)")]
+	[Tooltip("% Р·Р°РјРµРґР»РµРЅРёСЏ РґР»СЏ Frost (0.5 = 50%)")]
 	[Range(0f, 1f)]
 	public float slowAmount = 0.5f;
 
-	[Tooltip("Тривалість дебафу (сек)")]
+	[Tooltip("РўСЂРёРІР°Р»С–СЃС‚СЊ РґРµР±Р°С„Сѓ (СЃРµРє)")]
 	public float debuffDuration = 3f;
 
-	[Tooltip("DoT урон в секунду")]
+	[Tooltip("DoT СѓСЂРѕРЅ РІ СЃРµРєСѓРЅРґСѓ")]
 	public float dotDamagePerSecond = 0.5f;
 
-	[Tooltip("Кількість стрибків Chain Lightning")]
+	[Tooltip("РљС–Р»СЊРєС–СЃС‚СЊ СЃС‚СЂРёР±РєС–РІ Chain Lightning")]
 	public int chainBounces = 3;
 
-	[Tooltip("% урону на кожний стрибок")]
+	[Tooltip("% СѓСЂРѕРЅСѓ РЅР° РєРѕР¶РЅРёР№ СЃС‚СЂРёР±РѕРє")]
 	[Range(0f, 1f)]
 	public float chainDamageFalloff = 0.5f;
 
 	[Header("Upgrade System")]
 	[SerializeField] private TowerUpgradeLevel[] upgradeLevels = new TowerUpgradeLevel[5];
 
-	// Runtime данные
-	[HideInInspector] public int currentLevel = 1; // Поточний рівень башни (1-5)
+	// Runtime РґР°РЅРЅС‹Рµ
+	[HideInInspector] public int currentLevel = 1; // РџРѕС‚РѕС‡РЅРёР№ СЂС–РІРµРЅСЊ Р±Р°С€РєРё (1-5)
 
 	/// <summary>
-	/// Отримати дані апгрейду для поточного рівня
+	/// РћС‚СЂРёРјР°С‚Рё РґР°РЅС– Р°РїРіСЂРµР№РґСѓ РґР»СЏ РїРѕС‚РѕС‡РЅРѕРіРѕ СЂС–РІРЅСЏ
 	/// </summary>
 	public TowerUpgradeLevel GetCurrentUpgradeLevel()
 	{
-		int index = currentLevel - 1; // Рівні: 1-5, індекс: 0-4
+		int index = currentLevel - 1; // Р С–РІРЅС–: 1-5, С–РЅРґРµРєСЃ: 0-4
 		if (index >= 0 && index < upgradeLevels.Length)
 			return upgradeLevels[index];
 		return null;
 	}
 
 	/// <summary>
-	/// Отримати дані апгрейду для наступного рівня
+	/// РћС‚СЂРёРјР°С‚Рё РґР°РЅС– Р°РїРіСЂРµР№РґСѓ РґР»СЏ РЅР°СЃС‚СѓРїРЅРѕРіРѕ СЂС–РІРЅСЏ
 	/// </summary>
 	public TowerUpgradeLevel GetNextUpgradeLevel()
 	{
@@ -103,7 +103,7 @@ public class TowerData : ScriptableObject
 	}
 
 	/// <summary>
-	/// Отримати вартість апгрейду на наступний рівень
+	/// РћС‚СЂРёРјР°С‚Рё РІР°СЂС‚С–СЃС‚СЊ Р°РїРіСЂРµР№РґСѓ РЅР° РЅР°СЃС‚СѓРїРЅРёР№ СЂС–РІРµРЅСЊ
 	/// </summary>
 	public int GetUpgradeCost()
 	{
@@ -112,7 +112,7 @@ public class TowerData : ScriptableObject
 	}
 
 	/// <summary>
-	/// Чи можна апгрейдити башню ще
+	/// Р§Рё РјРѕР¶РЅР° Р°РїРіСЂРµР№РґРёС‚Рё Р±Р°С€РЅСЋ С‰Рµ
 	/// </summary>
 	public bool CanUpgrade()
 	{
@@ -120,27 +120,31 @@ public class TowerData : ScriptableObject
 	}
 
 	/// <summary>
-	/// Застосувати апгрейд - змінити статистику
+	/// Р—Р°СЃС‚РѕСЃСѓРІР°С‚Рё Р°РїРіСЂРµР№Рґ - Р·РјС–РЅРёС‚Рё СЃС‚Р°С‚РёСЃС‚РёРєСѓ
 	/// </summary>
 	public void ApplyUpgradeLevelStats()
 	{
-		if (!CanUpgrade()) return;
+		if (!CanUpgrade())
+		{
+			Debug.LogWarning($"вќЊ {name} РІР¶Рµ РЅР° РјР°РєСЃРёРјР°Р»СЊРЅРѕРјСѓ СЂС–РІРЅС– {currentLevel}!");
+			return;
+		}
 
 		TowerUpgradeLevel nextLevel = GetNextUpgradeLevel();
 		if (nextLevel != null)
 		{
-			// Помножити статистику на мультиплікатори
+			// РџРѕРјРЅРѕР¶РёС‚Рё СЃС‚Р°С‚РёСЃС‚РёРєСѓ РЅР° РјСѓР»СЊС‚РёРїР»С–РєР°С‚РѕСЂРё
 			damage *= nextLevel.damageMultiplier;
 			shootInterval *= (1f / nextLevel.fireRateMultiplier);
 			range *= nextLevel.rangeMultiplier;
 
-			// Застосувати спеціальні ефекти 5-го рівня
+			// Р—Р°СЃС‚РѕСЃСѓРІР°С‚Рё СЃРїРµС†С–Р°Р»СЊРЅС– РµС„РµРєС‚Рё 5-РіРѕ СЂС–РІРЅСЏ
 			if (nextLevel.isUltimateUpgrade)
 			{
 				if (nextLevel.unlocksAOE)
 				{
-					aoeRadius = Mathf.Max(aoeRadius, 3f); // Мінімум 3f AOE
-					damageType |= DamageType.Explosive;   // Додати флаг Explosive
+					aoeRadius = Mathf.Max(aoeRadius, 3f); // РњС–РЅС–РјСѓРј 3f AOE
+					damageType |= DamageType.Explosive;   // Р”РѕРґР°С‚Рё С„Р»Р°Рі Explosive
 				}
 
 				if (nextLevel.unlocksChain)
@@ -158,8 +162,8 @@ public class TowerData : ScriptableObject
 
 			currentLevel++;
 
-			Debug.Log($"?? {name} апгрейдена до рівня {currentLevel}! " +
-					  $"Урон: {damage:F1}, Радіус: {range:F1}");
+			Debug.Log($"вњ… {name} Р°РїРіСЂРµР№РґРµРЅР° РґРѕ СЂС–РІРЅСЏ {currentLevel}! " +
+					  $"РЈСЂРѕРЅ: {damage:F1}, Р Р°РґС–СѓСЃ: {range:F1}, РЁРІРёРґРєС–СЃС‚СЊ: {(1f / shootInterval):F2}");
 		}
 	}
 }

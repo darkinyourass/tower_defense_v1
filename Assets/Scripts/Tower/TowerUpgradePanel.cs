@@ -114,14 +114,13 @@ public class TowerUpgradePanel : MonoBehaviour
 			// Грати звук апгрейду
 			AudioManager.Instance.PlayTowerPlaced();
 
-			// Оновити панель
-			Open(_selectedTower);
+			// ⭐ ЗАКРЫТЬ ПАНЕЛЬ СРАЗУ - это предотвратит двойной клик
+			Close();
 		}
 		else
 		{
 			// Показати попередження
 			Debug.LogWarning("Недостатньо ресурсів для апгрейду!");
-			// Можна додати анімацію тремтіння кнопки або звук помилки
 			StartCoroutine(ShowInsufficientResourcesWarning());
 		}
 	}

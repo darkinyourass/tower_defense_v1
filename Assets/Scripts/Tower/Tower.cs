@@ -10,6 +10,10 @@ public class Tower : MonoBehaviour
 	private float _shootTimer;
 	private SpriteRenderer _spriteRenderer;
 
+	// ⭐ НОВЕ: Трекінг вкладених грошей
+	private int _totalInvestedCost;
+	public int TotalInvestedCost => _totalInvestedCost;
+
 	// Event для UI
 	public static event System.Action<Tower> OnTowerClicked;
 
@@ -36,6 +40,9 @@ public class Tower : MonoBehaviour
 
 		// Ініціалізувати рівень башни
 		data.currentLevel = 1;
+
+		// ⭐ НОВЕ: Базова вартість як початкова інвестиція
+		_totalInvestedCost = data.cost;
 	}
 
 	private void Update()
@@ -99,31 +106,31 @@ public class Tower : MonoBehaviour
 			damageInfo.ChainBounces = data.chainBounces;
 			damageInfo.ChainDamageFalloff = data.chainDamageFalloff;
 
-			if (data.damageType.HasFlag(DamageType.Explosive))
-			{
-				ExplosiveProjectile explosive = projectile.GetComponent<ExplosiveProjectile>();
-				if (explosive != null)
-					explosive.Shoot(data, _shootDirection, _enemiesInRange[0].transform, damageInfo);
-			}
-			else if (data.damageType.HasFlag(DamageType.Frost))
+			// ⭐ ПРАВИЛЬНА ПРІОРИТЕЗАЦІЯ: Frost спершу, потім Explosive
+			if (data.damageType.HasFlag(DamageType.Frost))
 			{
 				FreezeProjectile freeze = projectile.GetComponent<FreezeProjectile>();
 				if (freeze != null)
 					freeze.Shoot(data, _shootDirection, _enemiesInRange[0].transform, damageInfo);
+			}
+			else if (data.damageType.HasFlag(DamageType.Explosive))
+			{
+				ExplosiveProjectile explosive = projectile.GetComponent<ExplosiveProjectile>();
+				if (explosive != null)
+					explosive.Shoot(data, _shootDirection, _enemiesInRange[0].transform, damageInfo);
 			}
 			else
 			{
 				Projectile proj = projectile.GetComponent<Projectile>();
 				if (proj != null)
 				{
-					// ✅ НОВАЯ СИГНАТУРА: (damage, pierce, speed, size, duration, direction)
 					proj.Shoot(
-						data.damage,                    // damage
-						0,                              // pierce (у башен пока нет)
-						data.projectileSpeed,           // speed
-						data.projectileSize,            // size
-						data.projectileDuration,        // duration
-						_shootDirection                 // direction
+						data.damage,
+						0,
+						data.projectileSpeed,
+						data.projectileSize,
+						data.projectileDuration,
+						_shootDirection
 					);
 				}
 			}
@@ -141,6 +148,10 @@ public class Tower : MonoBehaviour
 			return;
 		}
 
+		// ⭐ НОВЕ: Додати вартість апгрейду до загальної інвестиції
+		int upgradeCost = data.GetUpgradeCost();
+		_totalInvestedCost += upgradeCost;
+
 		// Застосувати нові статистики
 		data.ApplyUpgradeLevelStats();
 
@@ -153,6 +164,20 @@ public class Tower : MonoBehaviour
 		{
 			_spriteRenderer.sprite = level.upgradeSprite;
 		}
+	}
+
+	/// <summary>
+	/// ⭐ НОВЕ: Продати башню за 50% від загальної вартості
+	/// </summary>
+	public int Sell()
+	{
+		int refund = Mathf.RoundToInt(_totalInvestedCost * 0.5f);
+		GameManager.Instance.AddResources(refund);
+
+		Debug.Log($"🔥 Башня {data.name} продана за {refund}💰 (50% від {_totalInvestedCost}💰)");
+
+		Destroy(gameObject);
+		return refund;
 	}
 
 	/// <summary>
@@ -169,9 +194,9 @@ public class Tower : MonoBehaviour
 	{
 		OnTowerClicked?.Invoke(this);
 	}
+
 	public void Click()
 	{
 		OnTowerClicked?.Invoke(this);
 	}
-
 }

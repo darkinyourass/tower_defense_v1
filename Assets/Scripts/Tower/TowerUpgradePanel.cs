@@ -16,29 +16,39 @@ public class TowerUpgradePanel : MonoBehaviour
 	[SerializeField] private Button upgradeButton;
 	[SerializeField] private TextMeshProUGUI upgradeCostText;
 	[SerializeField] private TextMeshProUGUI upgradeBonusText;
+
+	// ⭐ НОВЕ: Кнопка продажу
+	[SerializeField] private Button sellButton;
+	[SerializeField] private TextMeshProUGUI sellCostText;
+
 	[SerializeField] private Button closeButton;
 
 	private Tower _selectedTower;
 	private TowerData _towerData;
-	private bool _isProcessingUpgrade = false;  // ⭐ ДОБАВИТЬ ЭТОТ ФЛАГ
+	private bool _isProcessingUpgrade = false;
 
 	private void OnEnable()
 	{
 		upgradeButton.onClick.AddListener(OnUpgradeClicked);
+		sellButton.onClick.AddListener(OnSellClicked);
 		closeButton.onClick.AddListener(Close);
 	}
 
 	private void OnDisable()
 	{
 		upgradeButton.onClick.RemoveListener(OnUpgradeClicked);
+		sellButton.onClick.RemoveListener(OnSellClicked);
 		closeButton.onClick.RemoveListener(Close);
 	}
 
+	/// <summary>
+	/// Відкрити панель апгрейду для обраної башни
+	/// </summary>
 	public void Open(Tower tower)
 	{
 		_selectedTower = tower;
 		_towerData = tower.GetTowerData();
-		_isProcessingUpgrade = false;  // ⭐ СБРОСИТЬ ФЛАГ
+		_isProcessingUpgrade = false;
 
 		if (_towerData == null)
 		{
@@ -46,27 +56,32 @@ public class TowerUpgradePanel : MonoBehaviour
 			return;
 		}
 
+		// Заповнити інформацію башни
 		towerNameText.text = _towerData.name;
 		if (_towerData.sprite != null)
 			towerIcon.sprite = _towerData.sprite;
 
+		// Заповнити рівень і статистику
 		levelText.text = $"Level: {_towerData.currentLevel}/5";
 		damageText.text = $"DMG: {_towerData.damage:F1}";
 		rangeText.text = $"Range: {_towerData.range:F1}";
 		fireRateText.text = $"Attack Speed: {(1f / _towerData.shootInterval):F2}";
 
+		// Скасувати бонус текст спочатку
 		upgradeBonusText.text = "";
 
+		// Заповнити кнопку апгрейду
 		if (_towerData.CanUpgrade())
 		{
 			int cost = _towerData.GetUpgradeCost();
 			upgradeCostText.text = $"Upgrade: {cost} 💰";
 			upgradeButton.interactable = true;
 
+			// Показати спеціальний бонус якщо це буде 5 рівень
 			TowerUpgradeLevel nextLevel = _towerData.GetNextUpgradeLevel();
 			if (nextLevel != null && nextLevel.isUltimateUpgrade)
 			{
-				string bonus = "🌟 SPECIEL UPGRADE!\n";
+				string bonus = "🌟 SPECIAL UPGRADE!\n";
 
 				if (nextLevel.unlocksAOE)
 					bonus += "✨ Розблокована атака по площі (AOE)\n";
@@ -78,7 +93,7 @@ public class TowerUpgradePanel : MonoBehaviour
 					bonus += "🔥 Розблокований вогневий урон\n";
 
 				upgradeBonusText.text = bonus;
-				upgradeBonusText.color = new Color(1f, 0.84f, 0f);
+				upgradeBonusText.color = new Color(1f, 0.84f, 0f); // Золотий колір
 			}
 		}
 		else
@@ -88,13 +103,16 @@ public class TowerUpgradePanel : MonoBehaviour
 			upgradeBonusText.text = "";
 		}
 
+		// ⭐ НОВЕ: Заповнити кнопку продажу
+		int sellAmount = Mathf.RoundToInt(_selectedTower.TotalInvestedCost * 0.5f);
+		sellCostText.text = $"Sell: {sellAmount} 💰";
+
 		panel.SetActive(true);
-		Time.timeScale = 0f;
+		Time.timeScale = 0f; // Пауза
 	}
 
 	public void OnUpgradeClicked()
 	{
-		// ⭐ ЗАЩИТА: Если уже обрабатываем апгрейд, выходим
 		if (_isProcessingUpgrade)
 		{
 			Debug.LogWarning("Апгрейд уже обрабатывается!");
@@ -108,7 +126,7 @@ public class TowerUpgradePanel : MonoBehaviour
 
 		if (GameManager.Instance.Resources >= cost)
 		{
-			_isProcessingUpgrade = true;  // ⭐ УСТАНОВИТЬ ФЛАГ
+			_isProcessingUpgrade = true;
 
 			GameManager.Instance.SpendResources(cost);
 			_selectedTower.UpgradeTower();
@@ -124,10 +142,31 @@ public class TowerUpgradePanel : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// ⭐ НОВЕ: Обробник кнопки продажу
+	/// </summary>
+	public void OnSellClicked()
+	{
+		if (_selectedTower == null)
+			return;
+
+		// Грати звук (можна додати окремий звук продажу)
+		AudioManager.Instance.PlayTowerPlaced();
+
+		// Продати башню
+		_selectedTower.Sell();
+
+		// Закрити панель
+		Close();
+	}
+
+	/// <summary>
+	/// Закрити панель апгрейду
+	/// </summary>
 	public void Close()
 	{
 		panel.SetActive(false);
-		Time.timeScale = 1f;
+		Time.timeScale = 1f; // Зняти паузу
 	}
 
 	private System.Collections.IEnumerator ShowInsufficientResourcesWarning()

@@ -73,11 +73,25 @@ public class Platform : MonoBehaviour
 
 	public void PlaceTower(TowerData data)
 	{
-		Instantiate(data.prefab, transform.position, Quaternion.identity, transform);
+		var towerInstance = Instantiate(data.prefab, transform.position, Quaternion.identity, transform);
+		var tower = towerInstance.GetComponent<Tower>();
+		if (tower != null)
+		{
+			tower.SetPlatform(this);
+		}
 
 		if (_spriteRenderer != null)
 		{
 			_spriteRenderer.enabled = false;
 		}
 	}
+
+	public void OnTowerSold()
+	{
+		if (_spriteRenderer != null)
+		{
+			_spriteRenderer.enabled = true;
+		}
+	}
+
 }

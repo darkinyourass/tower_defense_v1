@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
+	private Platform _platform;
 	[SerializeField] private TowerData data;
 	private CircleCollider2D _circleCollider;
 	private List<Enemy> _enemiesInRange;
@@ -176,9 +177,22 @@ public class Tower : MonoBehaviour
 
 		Debug.Log($"🔥 Башня {data.name} продана за {refund}💰 (50% від {_totalInvestedCost}💰)");
 
+		if (_platform != null)
+		{
+			_platform.OnTowerSold();
+		}
+
+		Destroy(gameObject);
+
 		Destroy(gameObject);
 		return refund;
 	}
+
+	public void SetPlatform(Platform platform)
+	{
+		_platform = platform;
+	}
+
 
 	/// <summary>
 	/// Отримати дані башни

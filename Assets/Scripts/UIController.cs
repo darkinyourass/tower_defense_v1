@@ -14,6 +14,89 @@ public class UIController : MonoBehaviour
 	[SerializeField] private TMP_Text rewardText;
 	[SerializeField] private TMP_Text baseHpPercentText;
 
+	[Header("=== CURRENCY UI (MAIN MENU) ===")]
+	[SerializeField] private TMP_Text currencyTextMainMenu;
+
+	[Header("=== HERO PANEL (MAIN MENU) ===")]
+	[SerializeField] private GameObject heroPanel;
+	[SerializeField] private TMP_Text heroDamageText;
+	[SerializeField] private TMP_Text heroAttackSpeedText;
+	[SerializeField] private TMP_Text heroMoveSpeedText;
+	[SerializeField] private Button heroUpgradeDamageButton;
+	[SerializeField] private TMP_Text heroUpgradeDamageCostText;
+
+	[SerializeField] private int heroDamageBaseCost = 50;
+	[SerializeField] private float heroDamageCostMultiplier = 1.5f;
+	[SerializeField] private float heroDamageUpgradeAmount = 2f;
+
+	private int _heroDamageUpgradeLevel = 0;
+	private const string HeroDamageUpgradeKey = "HERO_DAMAGE_UPGRADE_LEVEL";
+
+	private void InitHeroPanel()
+	{
+		if (heroPanel == null) return;
+
+		heroPanel.SetActive(true);
+
+		_heroDamageUpgradeLevel = PlayerPrefs.GetInt(HeroDamageUpgradeKey, 0);
+
+		if (heroUpgradeDamageButton != null)
+		{
+			heroUpgradeDamageButton.onClick.RemoveAllListeners();
+			heroUpgradeDamageButton.onClick.AddListener(OnHeroUpgradeDamageClicked);
+		}
+
+		RefreshHeroPanelUI();
+	}
+
+	private int GetHeroDamageUpgradeCost()
+	{
+		return Mathf.RoundToInt(heroDamageBaseCost * Mathf.Pow(heroDamageCostMultiplier, _heroDamageUpgradeLevel));
+	}
+
+	private void RefreshHeroPanelUI()
+	{
+		if (HeroStats.Instance != null)
+		{
+			if (heroDamageText != null)
+				heroDamageText.text = $"Damage: {HeroStats.Instance.GetDamage():0.0}";
+
+			if (heroAttackSpeedText != null)
+				heroAttackSpeedText.text = $"Attack Speed: {HeroStats.Instance.GetAttackSpeed():0.00}";
+
+			if (heroMoveSpeedText != null)
+				heroMoveSpeedText.text = $"Move Speed: {HeroStats.Instance.GetMoveSpeed():0.0}";
+		}
+
+		if (heroUpgradeDamageCostText != null)
+			heroUpgradeDamageCostText.text = GetHeroDamageUpgradeCost().ToString();
+
+		if (currencyTextMainMenu != null && CurrencyManager.Instance != null)
+			currencyTextMainMenu.text = CurrencyManager.Instance.CurrentCurrency.ToString();
+	}
+
+    private void OnHeroUpgradeDamageClicked()
+    {
+        if (CurrencyManager.Instance == null || HeroStats.Instance == null)
+            return;
+
+        int cost = GetHeroDamageUpgradeCost();
+        if (!CurrencyManager.Instance.SpendCurrency(cost))
+            return;
+
+        _heroDamageUpgradeLevel++;
+        PlayerPrefs.SetInt(HeroDamageUpgradeKey, _heroDamageUpgradeLevel);
+
+        HeroStats.Instance.ApplyStatModification(new StatModification
+        {
+            statType = StatType.Damage,
+            modificationType = ModificationType.Flat,
+            value = heroDamageUpgradeAmount
+        });
+
+        RefreshHeroPanelUI();
+    }
+
 	public static UIController Instance { get; private set; }
 
 	[SerializeField] private TowerUpgradePanel towerUpgradePanel;
@@ -82,6 +165,7 @@ public class UIController : MonoBehaviour
 		Tower.OnTowerClicked += HandleTowerClicked;
 		XPManager.OnXPChanged += UpdateXPBar;
 		XPManager.OnLevelUp += ShowLevelUpNotification;
+		CurrencyManager.Instance.OnCurrencyChanged += HandleCurrencyChanged;
 	}
 
     private void OnDisable()
@@ -96,7 +180,7 @@ public class UIController : MonoBehaviour
 		Tower.OnTowerClicked -= HandleTowerClicked;
 		XPManager.OnXPChanged -= UpdateXPBar;
 		XPManager.OnLevelUp -= ShowLevelUpNotification;
-
+		CurrencyManager.Instance.OnCurrencyChanged -= HandleCurrencyChanged;
 	}
 
 	private void Start()
@@ -312,28 +396,35 @@ public class UIController : MonoBehaviour
         AudioManager.Instance.PlayGameOver();
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        Camera mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        Canvas canvas = GetComponent<Canvas>();
-        canvas.worldCamera = mainCamera;
+	private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+	{
+		Camera mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+		Canvas canvas = GetComponent<Canvas>();
+		canvas.worldCamera = mainCamera;
 
-        HidePanels();
-        _isGamePaused = false;
-        _missionCompleteSoundPlayed = false;
+		HidePanels();
+		_isGamePaused = false;
+		_missionCompleteSoundPlayed = false;
 
-        if (scene.name == "MainMenu")
-        {
-            HideUI();
-        }
-        else
-        {
-            ShowUI();
-            StartCoroutine(ShowObjective());
-        }
-    }
+		if (scene.name == "MainMenu")
+		{
+			HideUI();
 
-    private IEnumerator ShowObjective()
+			// обновить текст валюты в меню
+			if (currencyTextMainMenu != null && CurrencyManager.Instance != null)
+				currencyTextMainMenu.text = CurrencyManager.Instance.CurrentCurrency.ToString();
+
+			// инициализировать панель героя (метод, о котором говорили)
+			InitHeroPanel();
+		}
+		else
+		{
+			ShowUI();
+			StartCoroutine(ShowObjective());
+		}
+	}
+
+	private IEnumerator ShowObjective()
     {
         objectiveText.text = $"Survive {LevelManager.Instance.CurrentLevel.wavesToWin} waves!";
         objectiveText.gameObject.SetActive(true);
@@ -464,6 +555,12 @@ public class UIController : MonoBehaviour
 		HideTowerPanel();
 		Debug.Log("🟢 Opening upgrade panel...");
 		towerUpgradePanel.Open(tower);
+	}
+
+	private void HandleCurrencyChanged(int newValue)
+	{
+		if (currencyTextMainMenu != null)
+			currencyTextMainMenu.text = newValue.ToString();
 	}
 
 }

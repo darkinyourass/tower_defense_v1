@@ -28,13 +28,6 @@ public class UIController : MonoBehaviour
 	[SerializeField] private Button heroUpgradeDamageButton;
 	[SerializeField] private TMP_Text heroUpgradeDamageCostText;
 
-	[SerializeField] private int heroDamageBaseCost = 50;
-	[SerializeField] private float heroDamageCostMultiplier = 1.5f;
-	[SerializeField] private float heroDamageUpgradeAmount = 2f;
-
-	private int _heroDamageUpgradeLevel = 0;
-	private const string HeroDamageUpgradeKey = "HERO_DAMAGE_UPGRADE_LEVEL";
-
 	private void InitHeroPanel()
 	{
 		_heroUpgradeLevel = PlayerPrefs.GetInt(HeroUpgradeLevelKey, 0);
@@ -42,8 +35,6 @@ public class UIController : MonoBehaviour
 		if (heroPanel == null) return;
 
 		heroPanel.SetActive(true);
-
-		_heroDamageUpgradeLevel = PlayerPrefs.GetInt(HeroDamageUpgradeKey, 0);
 
 		if (heroUpgradeDamageButton != null)
 		{

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelName: Level1
   wavesToWin: 1
-  startingResources: 200
+  startingResources: 100000
   startingLives: 10
   baseReward: 100
   scaleRewardByLives: 1

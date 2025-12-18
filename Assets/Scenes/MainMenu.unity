@@ -3419,8 +3419,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15654b5adbcacb543a841c0cbe59230a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heroPrefab: {fileID: 3855684190727528154, guid: e92cd9c84cd52094eb2442f9d52f69c5, type: 3}
-  heroSpawnPosition: {x: 0, y: 0}
   globalFont: {fileID: 11400000, guid: 3d4277f7f1a87e74f8dd79b5b45428e9, type: 2}
 --- !u!4 &517146669
 Transform:
@@ -5746,15 +5744,13 @@ MonoBehaviour:
   rewardText: {fileID: 82116798}
   baseHpPercentText: {fileID: 1181259901}
   currencyTextMainMenu: {fileID: 806026621}
+  heroUpgradeConfig: {fileID: 11400000, guid: 2be352c8b8685164ebf47cc3f777e463, type: 2}
   heroPanel: {fileID: 1098844599}
   heroDamageText: {fileID: 175066201}
   heroAttackSpeedText: {fileID: 1965380961}
   heroMoveSpeedText: {fileID: 39054861}
   heroUpgradeDamageButton: {fileID: 1537347380}
   heroUpgradeDamageCostText: {fileID: 1465125558}
-  heroDamageBaseCost: 50
-  heroDamageCostMultiplier: 1.5
-  heroDamageUpgradeAmount: 2
   towerUpgradePanel: {fileID: 1108303997}
   waveText: {fileID: 408411555}
   livesText: {fileID: 1040088370}

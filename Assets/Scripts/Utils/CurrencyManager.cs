@@ -22,8 +22,6 @@ public class CurrencyManager : MonoBehaviour
 		}
 
 		Instance = this;
-		DontDestroyOnLoad(gameObject);
-
 		LoadCurrency();
 	}
 

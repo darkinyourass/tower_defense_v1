@@ -165,7 +165,8 @@ public class UIController : MonoBehaviour
 		Tower.OnTowerClicked += HandleTowerClicked;
 		XPManager.OnXPChanged += UpdateXPBar;
 		XPManager.OnLevelUp += ShowLevelUpNotification;
-		CurrencyManager.Instance.OnCurrencyChanged += HandleCurrencyChanged;
+		if (CurrencyManager.Instance != null)
+			CurrencyManager.Instance.OnCurrencyChanged += HandleCurrencyChanged;
 	}
 
     private void OnDisable()
@@ -180,7 +181,8 @@ public class UIController : MonoBehaviour
 		Tower.OnTowerClicked -= HandleTowerClicked;
 		XPManager.OnXPChanged -= UpdateXPBar;
 		XPManager.OnLevelUp -= ShowLevelUpNotification;
-		CurrencyManager.Instance.OnCurrencyChanged -= HandleCurrencyChanged;
+		if (CurrencyManager.Instance != null)
+			CurrencyManager.Instance.OnCurrencyChanged -= HandleCurrencyChanged;
 	}
 
 	private void Start()

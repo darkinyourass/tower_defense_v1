@@ -9,7 +9,12 @@ using System;
 
 public class UIController : MonoBehaviour
 {
-    public static UIController Instance { get; private set; }
+
+	[Header("=== REWARD SYSTEM ===")]
+	[SerializeField] private TMP_Text rewardText;
+	[SerializeField] private TMP_Text baseHpPercentText;
+
+	public static UIController Instance { get; private set; }
 
 	[SerializeField] private TowerUpgradePanel towerUpgradePanel;
 
@@ -336,21 +341,50 @@ public class UIController : MonoBehaviour
         objectiveText.gameObject.SetActive(false);
     }
 
-    private void ShowMissionComplete()
-    {
-        if (!_missionCompleteSoundPlayed)
-        {
-            UpdateNextLevelButton();
-            missionCompletePanel.SetActive(true);
-            GameManager.Instance.SetTimeScale(0f);
-            AudioManager.Instance.PlayMissionComplete();
-            _missionCompleteSoundPlayed = true;
-            missionCompleteParticles.Play();
-        }
+	private void ShowMissionComplete()
+	{
+		if (!_missionCompleteSoundPlayed)
+		{
+			// === РАСЧЁТ НАГРАДЫ ===
+			int finalReward = 0;
 
-    }
+			var level = LevelManager.Instance.CurrentLevel;  // LevelData
+			if (level != null)
+			{
+				int startingLives = level.startingLives;
+				int currentLives = GameManager.Instance.Lives; // нужно публичное свойство Lives
 
-    public void EnterEndlessMode()
+				if (level.scaleRewardByLives && startingLives > 0)
+				{
+					float livesPercent = Mathf.Clamp01((float)currentLives / startingLives);
+					finalReward = Mathf.RoundToInt(level.baseReward * livesPercent);
+
+					if (baseHpPercentText != null)
+						baseHpPercentText.text = $"Lives: {currentLives}/{startingLives} ({(int)(livesPercent * 100)}%)";
+				}
+				else
+				{
+					finalReward = level.baseReward;
+				}
+			}
+
+			if (rewardText != null)
+				rewardText.text = $"+{finalReward}";
+
+			if (CurrencyManager.Instance != null)
+				CurrencyManager.Instance.AddCurrency(finalReward);
+
+			// === СТАРАЯ ЛОГИКА ===
+			UpdateNextLevelButton();
+			missionCompletePanel.SetActive(true);
+			GameManager.Instance.SetTimeScale(0f);
+			AudioManager.Instance.PlayMissionComplete();
+			_missionCompleteSoundPlayed = true;
+			missionCompleteParticles.Play();
+		}
+	}
+
+	public void EnterEndlessMode()
     {
         missionCompletePanel.SetActive(false);
         GameManager.Instance.SetTimeScale(GameManager.Instance.GameSpeed);

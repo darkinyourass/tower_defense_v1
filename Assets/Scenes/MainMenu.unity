@@ -3419,6 +3419,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15654b5adbcacb543a841c0cbe59230a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heroPrefab: {fileID: 3855684190727528154, guid: e92cd9c84cd52094eb2442f9d52f69c5, type: 3}
+  heroSpawnPosition: {x: 0, y: 0}
   globalFont: {fileID: 11400000, guid: 3d4277f7f1a87e74f8dd79b5b45428e9, type: 2}
 --- !u!4 &517146669
 Transform:

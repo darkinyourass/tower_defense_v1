@@ -181,11 +181,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54dd88853ddf2884194da669a428cf09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  shootCooldown: 0.8
   attackRange: 3
-  baseDamage: 10
-  damageType: 32
+  damageType: 1
 --- !u!114 &6279700366007744548
 MonoBehaviour:
   m_ObjectHideFlags: 0

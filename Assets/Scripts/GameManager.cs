@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+	public static GameManager Instance { get; private set; }
 
     public static event Action<int> OnLivesChanged;
     public static event Action<int> OnResourcesChanged;
@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
         {
             ResetGameState();
             AudioManager.Instance.PlayMusic(AudioManager.Instance.gameplayMusic);
-        }
+		}
     }
 
     private void ApplyGlobalFont()

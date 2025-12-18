@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8019d69d31fa2e443acca8e5d08c035c, type: 3}
+  m_Name: HeroUpgradeConfig
+  m_EditorClassIdentifier: 
+  levels:
+  - cost: 50
+    damageBonus: 5
+    attackSpeedBonus: 0
+    moveSpeedBonus: 0
+  - cost: 100
+    damageBonus: 0
+    attackSpeedBonus: 5
+    moveSpeedBonus: 0
+  - cost: 200
+    damageBonus: 0
+    attackSpeedBonus: 0
+    moveSpeedBonus: 0.1

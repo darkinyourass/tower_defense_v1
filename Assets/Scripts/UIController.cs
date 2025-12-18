@@ -18,6 +18,9 @@ public class UIController : MonoBehaviour
 	[SerializeField] private TMP_Text currencyTextMainMenu;
 
 	[Header("=== HERO PANEL (MAIN MENU) ===")]
+	[SerializeField] private HeroUpgradeConfig heroUpgradeConfig;
+	private int _heroUpgradeLevel = 0;
+	private const string HeroUpgradeLevelKey = "HERO_UPGRADE_LEVEL";
 	[SerializeField] private GameObject heroPanel;
 	[SerializeField] private TMP_Text heroDamageText;
 	[SerializeField] private TMP_Text heroAttackSpeedText;
@@ -34,6 +37,8 @@ public class UIController : MonoBehaviour
 
 	private void InitHeroPanel()
 	{
+		_heroUpgradeLevel = PlayerPrefs.GetInt(HeroUpgradeLevelKey, 0);
+
 		if (heroPanel == null) return;
 
 		heroPanel.SetActive(true);
@@ -51,7 +56,8 @@ public class UIController : MonoBehaviour
 
 	private int GetHeroDamageUpgradeCost()
 	{
-		return Mathf.RoundToInt(heroDamageBaseCost * Mathf.Pow(heroDamageCostMultiplier, _heroDamageUpgradeLevel));
+		var levelData = heroUpgradeConfig?.GetLevel(_heroUpgradeLevel);
+		return levelData != null ? levelData.cost : 0;
 	}
 
 	private void RefreshHeroPanelUI()
@@ -77,25 +83,46 @@ public class UIController : MonoBehaviour
 
     private void OnHeroUpgradeDamageClicked()
     {
-        if (CurrencyManager.Instance == null || HeroStats.Instance == null)
-            return;
+		if (CurrencyManager.Instance == null || HeroStats.Instance == null)
+			return;
 
-        int cost = GetHeroDamageUpgradeCost();
-        if (!CurrencyManager.Instance.SpendCurrency(cost))
-            return;
+		var levelData = heroUpgradeConfig?.GetLevel(_heroUpgradeLevel);
+		if (levelData == null)
+			return;
 
-        _heroDamageUpgradeLevel++;
-        PlayerPrefs.SetInt(HeroDamageUpgradeKey, _heroDamageUpgradeLevel);
+		int cost = levelData.cost;
+		if (!CurrencyManager.Instance.SpendCurrency(cost))
+			return;
 
-        HeroStats.Instance.ApplyStatModification(new StatModification
-        {
-            statType = StatType.Damage,
-            modificationType = ModificationType.Flat,
-            value = heroDamageUpgradeAmount
-        });
+		_heroUpgradeLevel++;
+		PlayerPrefs.SetInt(HeroUpgradeLevelKey, _heroUpgradeLevel);
 
-        RefreshHeroPanelUI();
-    }
+		if (levelData.damageBonus != 0)
+			HeroStats.Instance.ApplyStatModification(new StatModification
+			{
+				statType = StatType.Damage,
+				modificationType = ModificationType.Flat,
+				value = levelData.damageBonus
+			});
+
+		if (levelData.attackSpeedBonus != 0)
+			HeroStats.Instance.ApplyStatModification(new StatModification
+			{
+				statType = StatType.AttackSpeed,
+				modificationType = ModificationType.Flat,
+				value = levelData.attackSpeedBonus
+			});
+
+		if (levelData.moveSpeedBonus != 0)
+			HeroStats.Instance.ApplyStatModification(new StatModification
+			{
+				statType = StatType.MoveSpeed,
+				modificationType = ModificationType.Flat,
+				value = levelData.moveSpeedBonus
+			});
+
+		RefreshHeroPanelUI();
+	}
 
 	public static UIController Instance { get; private set; }
 
@@ -412,16 +439,21 @@ public class UIController : MonoBehaviour
 		{
 			HideUI();
 
-			// обновить текст валюты в меню
 			if (currencyTextMainMenu != null && CurrencyManager.Instance != null)
 				currencyTextMainMenu.text = CurrencyManager.Instance.CurrentCurrency.ToString();
 
-			// инициализировать панель героя (метод, о котором говорили)
+			if (heroPanel != null)
+				heroPanel.SetActive(true);      // показать панель героя в меню
+
 			InitHeroPanel();
 		}
 		else
 		{
 			ShowUI();
+
+			if (heroPanel != null)
+				heroPanel.SetActive(false);     // спрятать панель героя в бою
+
 			StartCoroutine(ShowObjective());
 		}
 	}
